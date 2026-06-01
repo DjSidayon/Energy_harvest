@@ -2,6 +2,7 @@
 #define GPIO_H_
 
 #include "stm32g4xx.h"
+#include "gpio_util.h"
 
 /* Function prototypes */
 void initGpio(void);
