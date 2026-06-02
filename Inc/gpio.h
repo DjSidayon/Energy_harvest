@@ -1,7 +1,7 @@
 #ifndef GPIO_H_
 #define GPIO_H_
 
-#include "stm32g4xx.h"
+#include "util.h"
 #include "gpio_util.h"
 
 /* Function prototypes */

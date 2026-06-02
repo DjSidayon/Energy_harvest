@@ -1,7 +1,7 @@
 #ifndef PWM_H_
 #define PWM_H_
 
-#include "stm32g4xx.h"
+#include "util.h"
 
 /* Function prototypes. */
 void initPwm(void);
