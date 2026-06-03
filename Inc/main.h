@@ -31,6 +31,7 @@ extern "C" {
 #include "gpio.h"
 #include "adc.h"
 #include "pwm.h"
+#include "stm32g4xx_it.h"
 
 
 void Error_Handler(void);

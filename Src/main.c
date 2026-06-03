@@ -46,6 +46,7 @@ int main(void)
 
 static void initSystemClock(void)
 {
+    __HAL_RCC_PWR_CLK_ENABLE();
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
@@ -56,11 +57,11 @@ static void initSystemClock(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV2;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV4;
   RCC_OscInitStruct.PLL.PLLN = 85;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
@@ -83,6 +84,13 @@ static void initSystemClock(void)
   {
     Error_Handler();
   }
+
+  //DEBUG values
+  uint32_t sys = HAL_RCC_GetSysClockFreq();
+  uint32_t hclk = HAL_RCC_GetHCLKFreq();
+  uint32_t pclk1 = HAL_RCC_GetPCLK1Freq();
+  uint32_t pclk2 = HAL_RCC_GetPCLK2Freq();
+
 }
 
 /**
