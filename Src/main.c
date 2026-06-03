@@ -39,7 +39,7 @@ int main(void)
 
   while (1)
   {
-
+      serviceAdc();
   }
 }
 
@@ -96,10 +96,6 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOF_CLK_ENABLE();
 }
 
-void SysTick_Handler(void)
-{
-    HAL_IncTick();
-}
 
 
 /**

@@ -3,6 +3,9 @@
 #define ADC_TIMER_PSC       (1U - 1U)
 #define ADC_SAMPLING_FREQ   ((double) 2000.0)
 
+#define weightedAccumulation(accum, new_val, shift) \
+        (accum) = ((accum) - ((accum) >> (shift))) + (new_val)
+
 typedef struct {
     uint32_t isr_tcif;
     uint32_t ifcr_ctcif;
@@ -15,6 +18,7 @@ AdcFilterStruct_t g_adcdata[ADC_CH_COUNT];
 /* Function prototypes */
 static void initAdcTimer(void);
 static void initAdcMetering(void);
+static inline void updateAdcFilter(void);
 
 void initAdc(void)
 {
@@ -55,11 +59,11 @@ static void initAdcTimer(void)
     // pointer to apply only change of timer in the next 2 commands
     TIM_TypeDef * const ADC_HW_TIMER = TIM1;
     // Enable clock for TIM1
-    setBit(RCC->APB2ENR, RCC_APB2ENR_TIM1EN);
+    SET_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM1EN);
 
     ADC_HW_TIMER->PSC = ADC_TIMER_PSC; // prescale register
     // auto reload register value: 1000us / (1/system clock)
-    ADC_HW_TIMER->ARR = ROUND_TO(uint32_t, ((double)SYSTEM_CLOCK_HZ/(ADC_SAMPLING_FREQ*(double)(ADC_TIMER_PSC + 1U)) )); /* parasoft-suppress MISRAC2012-DIR_4_6-b "Calculation is carried out int double, but will be replaced by compiler with const." */
+    ADC_HW_TIMER->ARR = ROUND_TO(uint32_t, ((double)SYSTEM_CLOCK_HZ/(ADC_SAMPLING_FREQ*(double)(ADC_TIMER_PSC + 1U)) ));
     ADC_HW_TIMER->CR2 = TIM_CR2_MMS2_1;  // master mode "Update" trigger output (TRGO2)
     /* Force update generation (UG = 1) */
     ADC_HW_TIMER->EGR = TIM_EGR_UG;
@@ -77,7 +81,7 @@ static void initAdcMetering(void)
     SET_BIT(RCC->AHB2ENR, RCC_AHB2ENR_ADC12EN);
 
     // select system clock for peripheral
-    modifyBits(RCC->CCIPR, RCC_CCIPR_ADC12SEL, RCC_CCIPR_ADC12SEL_1);
+    modReg(RCC->CCIPR, RCC_CCIPR_ADC12SEL, RCC_CCIPR_ADC12SEL_1);
 
     // assign TC registers of specified dma
     assignDmaTransComplBits((uintptr_t)DMA_CH, &g_dma_reg_handle.isr_tcif, &g_dma_reg_handle.ifcr_ctcif);
@@ -107,10 +111,10 @@ static void initAdcMetering(void)
 
         ADC_REG->SQR1 =
             _VAL2FLD(ADC_SQR1_L, (ADC_CH_COUNT-1))   |    // number of channels
-            _VAL2FLD(ADC_SQR1_SQ1, 16U)  |                 // AD_VREF_int
-            _VAL2FLD(ADC_SQR1_SQ2, 18U)  |                 // AD_VTS_int
-            _VAL2FLD(ADC_SQR1_SQ3, 16U) |                  // AD_VREF_int
-            _VAL2FLD(ADC_SQR1_SQ4, 18U);                   // AD_VTS_int
+            _VAL2FLD(ADC_SQR1_SQ1, 1U)  |                 // ADC1_CH1
+            _VAL2FLD(ADC_SQR1_SQ2, 2U)  |                 // ADC1_CH2
+            _VAL2FLD(ADC_SQR1_SQ3, 3U) |                  // ADC1_CH3
+            _VAL2FLD(ADC_SQR1_SQ4, 4U);                   // ADC1_CH4
 
          /* sample time configuration */
         ADC_REG->SMPR1 =
@@ -139,16 +143,16 @@ static void initAdcMetering(void)
             _VAL2FLD(DMA_CCR_DIR, 0U);       // from peripheral to memory
 
         // assign ADC as multiplexer input to DMA-Channel1 acc. to Table 91
-        modifyBits(DMAMUX_CH->CCR, DMAMUX_CxCR_DMAREQ_ID, DMAMUX_REQ_INPUT_ADC1);
+        modReg(DMAMUX_CH->CCR, DMAMUX_CxCR_DMAREQ_ID, DMAMUX_REQ_INPUT_ADC1);
 
         SET_BIT(ADC_REG->CFGR, ADC_CFGR_DMAEN);
 
         SET_BIT(ADC_REG->CR, ADC_CR_ADEN);      // Enable and start ADC after configuration
 
-        while(!isBitSet(ADC_REG->ISR, ADC_ISR_ADRDY)) {}
+        while(!IS_BIT_SET(ADC_REG->ISR, ADC_ISR_ADRDY)) {}
 
-        enableDma(DMA_CH);                 // activating dma-channel 1
-        setBit(ADC_REG->CR, ADC_CR_ADSTART);
+        SET_BIT(DMA_CH->CCR, DMA_CCR_EN);
+        SET_BIT(ADC_REG->CR, ADC_CR_ADSTART);
 }
 
 static inline void updateAdcFilter(void)

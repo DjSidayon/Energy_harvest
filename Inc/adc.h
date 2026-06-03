@@ -8,16 +8,16 @@
 /**
  * AD Channels list
  * ------------------
- * IN6  AIN6_ADC_IDX, PC0,
- * IN16 AD_TEMP_MCU
- * IN18 AD_VREFINT
+ * IN1 ADC_CH1
+ * IN2 ADC_CH2
+ * IN3 ADC_CH3
+ * IN4 ADC_CH4
  */
 typedef enum {
-    //AIN6_ADC_IDX,
-    TEMP_MCU_IDX,
-    VREFINT_IDX,
-    TEMP_MCU_IDX_2,
-    VREFINT_IDX_2,
+    ADC_CH1,
+    ADC_CH2,
+    ADC_CH3,
+    ADC_CH4,
     ADC_CH_COUNT
 } AdcIndex_t;
 
