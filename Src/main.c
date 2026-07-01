@@ -30,6 +30,7 @@ int main(void)
     initSystemClock();
     initGpio();
     initPwm();
+    initAdc();
 
 
 
