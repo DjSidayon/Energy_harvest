@@ -1,11 +1,11 @@
 #include "pwm.h"
 
 
-#define TIM_PSC             (100U - 1U)
+#define TIM_PSC             (1U - 1U)
 #define TIM_FREQ            ((double) 200e3)
 
-//#define TIM_PWM_PERIOD      ROUND_TO(uint32_t, ((double) SYSTEM_CLOCK_HZ/(TIM_FREQ*(double)(TIM_PSC+1U)) ))
-#define TIM_PWM_PERIOD      ((uint32_t)((double) SYSTEM_CLOCK_HZ/(2*TIM_FREQ*(double)(TIM_PSC+1U))))
+#define TIM_PWM_PERIOD      ROUND_TO(uint32_t, ((double) SYSTEM_CLOCK_HZ/(2*TIM_FREQ*(double)(TIM_PSC+1U)) ))
+//#define TIM_PWM_PERIOD      ((uint32_t)((double) SYSTEM_CLOCK_HZ/(2*TIM_FREQ * (TIM_PSC+1U))))
 
 #define TIM_PWM_DUTY_1     ROUND_TO(uint16_t , (double)TIM_PWM_PERIOD * 0.5)
 #define TIM_PWM_DUTY_2     ROUND_TO(uint16_t, TIM_PWM_DUTY_1 + (TIM_PWM_PERIOD >> 2)) //90° Verschiebung
