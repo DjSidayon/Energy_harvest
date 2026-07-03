@@ -107,23 +107,19 @@ static void initAdcMetering(void)
             _VAL2FLD(ADC_CFGR_EXTSEL, 10U)     |     // External trigger selection for regular group: adc_ext_trg10, TIM1_TRGO2, 01010
             _VAL2FLD(ADC_CFGR_RES, 0U)         |     // 12-bit data resolution
             _VAL2FLD(ADC_CFGR_DMACFG, 1U)      |     // DMA circular mode
-            _VAL2FLD(ADC_CFGR_DMAEN, 0U);            // DMA enabled
+            _VAL2FLD(ADC_CFGR_DMAEN, 1U);            // DMA enabled
 
     // Regular sequence configuration for control
 
         ADC_REG->SQR1 =
             _VAL2FLD(ADC_SQR1_L, (ADC_CH_COUNT-1))   |    // number of channels
             _VAL2FLD(ADC_SQR1_SQ1, 1U)  |                 // ADC1_CH1
-            _VAL2FLD(ADC_SQR1_SQ2, 2U) |                  // ADC1_CH2
-            _VAL2FLD(ADC_SQR1_SQ3, 15U) ;                  // ADC1_CH15
+            _VAL2FLD(ADC_SQR1_SQ2, 2U) ;                  // ADC1_CH2
 
          /* sample time configuration */
         ADC_REG->SMPR1 =
             _VAL2FLD(ADC_SMPR1_SMP1, 7U) |
             _VAL2FLD(ADC_SMPR1_SMP2, 7U);
-
-        ADC_REG->SMPR2 =
-            _VAL2FLD(ADC_SMPR2_SMP15, 7U);
 
         // Enable internal reference voltage.
         //SET_BIT(ADC_COMMON_REG->CCR, ADC_CCR_VREFEN);

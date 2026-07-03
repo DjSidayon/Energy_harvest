@@ -31,6 +31,7 @@ extern "C" {
 #include "gpio.h"
 #include "adc.h"
 #include "pwm.h"
+#include "metall_detection.h"
 #include "stm32g4xx_it.h"
 
 

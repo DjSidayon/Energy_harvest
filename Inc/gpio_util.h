@@ -116,7 +116,7 @@ static inline uint32_t afrMsk(const uint32_t mode, const uint32_t pin)
 /**************************************************************************************/
 
 /************************************FUNCTIONS********************************************/
-static inline void setGpioOutput( GPIO_TypeDef* const port, const uint32_t pin)
+inline void setGpioOutput( GPIO_TypeDef* const port, const uint32_t pin)
 {
     if (pin < (4U * (uint8_t)8))
     {
@@ -125,7 +125,7 @@ static inline void setGpioOutput( GPIO_TypeDef* const port, const uint32_t pin)
 }
 
 
-static inline void resetGpioOutput(GPIO_TypeDef* const port, const uint32_t pin)
+inline void resetGpioOutput(GPIO_TypeDef* const port, const uint32_t pin)
 {
     if (pin < (4U * (uint8_t)8))
     {
@@ -134,7 +134,7 @@ static inline void resetGpioOutput(GPIO_TypeDef* const port, const uint32_t pin)
 }
 
 
-static inline void setGpioOutputValue(GPIO_TypeDef* const port, const uint32_t pin, const bool on)
+inline void setGpioOutputValue(GPIO_TypeDef* const port, const uint32_t pin, const bool on)
 {
     (on) ? setGpioOutput(port, pin) : resetGpioOutput(port, pin);
 }

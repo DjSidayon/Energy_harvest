@@ -33,7 +33,11 @@ void initGpio(void)
             GPIO_AF_MODE(14);           // SWCLK
 
     GPIOB->MODER =
-            GPIO_ANALOG_MODE(0) | //ADC1_IN15
+            GPIO_OUTPUT_MODE(3) | //LED_IRON
+            GPIO_OUTPUT_MODE(5) | //LED_STEEL
+            GPIO_OUTPUT_MODE(4) | //LED_COPPER
+            GPIO_OUTPUT_MODE(10)| //LED_ALUMINIUM
+            //GPIO_ANALOG_MODE(0) | //ADC1_IN15
             GPIO_AF_MODE(6) | //TIM8_CH1 (D10)
             GPIO_AF_MODE(8); //TIM8_CH2 (D15)
 }

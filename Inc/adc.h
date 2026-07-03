@@ -10,12 +10,10 @@
  * ------------------
  * IN1 ADC_CH1
  * IN2 ADC_CH2
- * IN3 ADC_CH15
  */
 typedef enum {
-    ADC_IDX_NO_PHASE_SHIFT,
-    ADC_IDX_90_PHASE_SHIFT,
-    ADC_IDX,
+    ADC_IDX_IN_PHASE,
+    ADC_IDX_90_DEG_PHASE,
     ADC_CH_COUNT
 } AdcIndex_t;
 
