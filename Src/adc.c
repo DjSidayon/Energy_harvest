@@ -12,7 +12,7 @@ typedef struct {
 } dma_reg_t;
 
 static dma_reg_t g_dma_reg_handle;
-static uint32_t g_adc_dma_data[ADC_CH_COUNT];
+static uint16_t g_adc_dma_data[ADC_CH_COUNT];
 AdcFilterStruct_t g_adcdata[ADC_CH_COUNT];
 
 /* Function prototypes */
@@ -77,8 +77,10 @@ static void initAdcMetering(void)
     DMA_Channel_TypeDef * const DMA_CH = DMA1_Channel1;
     DMAMUX_Channel_TypeDef * const DMAMUX_CH = DMAMUX1_Channel0;
 
-    // Enable clock for ADC
+    // Enable clock for ADC & DMA
     SET_BIT(RCC->AHB2ENR, RCC_AHB2ENR_ADC12EN);
+    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_DMA1EN);
+    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_DMAMUX1EN);
 
     // select system clock for peripheral
     modReg(RCC->CCIPR, RCC_CCIPR_ADC12SEL, RCC_CCIPR_ADC12SEL_1);
@@ -112,20 +114,19 @@ static void initAdcMetering(void)
         ADC_REG->SQR1 =
             _VAL2FLD(ADC_SQR1_L, (ADC_CH_COUNT-1))   |    // number of channels
             _VAL2FLD(ADC_SQR1_SQ1, 1U)  |                 // ADC1_CH1
-            _VAL2FLD(ADC_SQR1_SQ2, 2U)  |                 // ADC1_CH2
-            _VAL2FLD(ADC_SQR1_SQ3, 3U) |                  // ADC1_CH3
-            _VAL2FLD(ADC_SQR1_SQ4, 4U);                   // ADC1_CH4
+            _VAL2FLD(ADC_SQR1_SQ2, 2U) |                  // ADC1_CH2
+            _VAL2FLD(ADC_SQR1_SQ3, 15U) ;                  // ADC1_CH15
 
          /* sample time configuration */
         ADC_REG->SMPR1 =
-            _VAL2FLD(ADC_SMPR1_SMP6, 7U);
+            _VAL2FLD(ADC_SMPR1_SMP1, 7U) |
+            _VAL2FLD(ADC_SMPR1_SMP2, 7U);
 
         ADC_REG->SMPR2 =
-            _VAL2FLD(ADC_SMPR2_SMP16, 7U)|
-            _VAL2FLD(ADC_SMPR2_SMP18, 7U);
+            _VAL2FLD(ADC_SMPR2_SMP15, 7U);
 
         // Enable internal reference voltage.
-        SET_BIT(ADC_COMMON_REG->CCR, ADC_CCR_VREFEN);
+        //SET_BIT(ADC_COMMON_REG->CCR, ADC_CCR_VREFEN);
 
         DMA_CH->CPAR = (uintptr_t)(&(ADC_REG->DR));
         DMA_CH->CMAR = (uintptr_t)(&g_adc_dma_data[0]);
@@ -135,12 +136,13 @@ static void initAdcMetering(void)
         DMA_CH->CCR =
             _VAL2FLD(DMA_CCR_MEM2MEM, 0U) |
             _VAL2FLD(DMA_CCR_PL, 0U) |       // low priority
-            _VAL2FLD(DMA_CCR_MSIZE, 2U) |    // 32 bit memory size
-            _VAL2FLD(DMA_CCR_PSIZE, 2U) |    // 32 bit peripheral size
+            _VAL2FLD(DMA_CCR_MSIZE, 1U) |    // 16 bit memory size
+            _VAL2FLD(DMA_CCR_PSIZE, 1U) |    // 16 bit peripheral size
             _VAL2FLD(DMA_CCR_MINC, 1U) |     // memory increment enabled
             _VAL2FLD(DMA_CCR_PINC, 0U) |     // peripheral increment disabled
             _VAL2FLD(DMA_CCR_CIRC, 1U) |     // circular mode enabled
-            _VAL2FLD(DMA_CCR_DIR, 0U);       // from peripheral to memory
+            _VAL2FLD(DMA_CCR_DIR, 0U) |       // from peripheral to memory
+            _VAL2FLD(DMA_CCR_TCIE, 1U);       // enable dma interrupt
 
         // assign ADC as multiplexer input to DMA-Channel1 acc. to Table 91
         modReg(DMAMUX_CH->CCR, DMAMUX_CxCR_DMAREQ_ID, DMAMUX_REQ_INPUT_ADC1);

@@ -10,14 +10,12 @@
  * ------------------
  * IN1 ADC_CH1
  * IN2 ADC_CH2
- * IN3 ADC_CH3
- * IN4 ADC_CH4
+ * IN3 ADC_CH15
  */
 typedef enum {
-    ADC_CH1,
-    ADC_CH2,
-    ADC_CH3,
-    ADC_CH4,
+    ADC_IDX_NO_PHASE_SHIFT,
+    ADC_IDX_90_PHASE_SHIFT,
+    ADC_IDX,
     ADC_CH_COUNT
 } AdcIndex_t;
 
@@ -30,6 +28,8 @@ extern AdcFilterStruct_t g_adcdata[ADC_CH_COUNT];
 
 
 #define ACCUM_WEIGHTING_SHIFT       (3U) // running average, 8 values accumulator
+
+#define getAdcAvg(idx)   (g_adcdata[(idx)].average)
 
 /* Function prototypes */
 void initAdc(void);
