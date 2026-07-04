@@ -2,7 +2,7 @@
 
 
 #define TIM_PSC             (1U - 1U)
-#define TIM_FREQ            ((double) 200e3)
+#define TIM_FREQ            ((double) 10e3)
 
 #define TIM_PWM_PERIOD      ROUND_TO(uint32_t, ((double) SYSTEM_CLOCK_HZ/(2*TIM_FREQ*(double)(TIM_PSC+1U)) ))
 //#define TIM_PWM_PERIOD      ((uint32_t)((double) SYSTEM_CLOCK_HZ/(2*TIM_FREQ * (TIM_PSC+1U))))
