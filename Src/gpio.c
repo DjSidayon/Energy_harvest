@@ -18,9 +18,10 @@ void initGpio(void)
     GPIOA->AFR[1] =       GPIO_AF0(13) |     // SWDIO
                           GPIO_AF0(14);      // SWCLK
 
-    GPIOB->AFR[0] =       GPIO_AF5(6);      // TIM8_CH1
-    GPIOB->AFR[1] =       GPIO_AF10(8);      // TIM8_CH2
-
+    //GPIOB->AFR[0] =       GPIO_AF5(6);      // TIM8_CH1
+    //GPIOB->AFR[1] =       GPIO_AF10(8);      // TIM8_CH2
+    GPIOB->AFR[1] =         GPIO_AF2(8);    //TIM4_CH3
+    GPIOC->AFR[0] =         GPIO_AF2(6);      //TIM3_CH1
 
     GPIOA->MODER =
             GPIO_ANALOG_MODE(0)     |   // ADC1_IN1 //does only reach 2050
@@ -38,6 +39,9 @@ void initGpio(void)
             GPIO_OUTPUT_MODE(4) | //LED_COPPER
             GPIO_OUTPUT_MODE(10)| //LED_ALUMINIUM
             //GPIO_ANALOG_MODE(0) | //ADC1_IN15
-            GPIO_AF_MODE(6) | //TIM8_CH1 (D10)
-            GPIO_AF_MODE(8); //TIM8_CH2 (D15)
+            //GPIO_AF_MODE(6) | //TIM8_CH1 (D10) base
+            //GPIO_AF_MODE(8); //TIM8_CH2 (D15) 90°
+            GPIO_AF_MODE(8); //TIM4_CH3 base (D15)
+
+    GPIOC->MODER = GPIO_AF_MODE(6); //TIM3_CH1
 }
